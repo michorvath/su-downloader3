@@ -31,7 +31,7 @@ const SuDScheduler = class {
 	get activeCount() {
 		return this.#countTasks('active')
 	}
-	
+
 	get stoppedCount() {
 		return this.#countTasks('stopped')
 	}
@@ -59,9 +59,9 @@ const SuDScheduler = class {
 			userObserver
 		}
 		this.#taskQueue.push(taskQueueItem)
-		
+
 		this.#tryNextInQueue()
-		
+
 		if(!this.options.autoStart) {
 			//convenience object to allow the user to dot chain start()
 			return {
@@ -81,7 +81,7 @@ const SuDScheduler = class {
 		var taskQueueItem = this.#getTaskQueueItem(key)
 		if(!taskQueueItem) return false
 		var { userObserver, params: { locations, options } } = taskQueueItem
-		
+
 		taskQueueItem.status = 'active'
 
 		var wrappedObserver = this.#wrapInternalObserver(key, userObserver)
@@ -102,7 +102,7 @@ const SuDScheduler = class {
 		var taskQueueItem = this.#getTaskQueueItem(key)
 		var dlSubscription = this.#downloadSubscriptions[key]
 		if(!dlSubscription || !taskQueueItem) return false
-		
+
 		taskQueueItem.status = stop ? 'stopped' : taskQueueItem.status
 
 		dlSubscription.unsubscribe()
@@ -121,9 +121,9 @@ const SuDScheduler = class {
 		var taskQueueItem = this.#getTaskQueueItem(key)
 		if(!taskQueueItem) return false
 		var { status } = taskQueueItem
-		
+
 		var dlSubscription = this.#downloadSubscriptions[key]
-		
+
 		if(dlSubscription) {
 			this.#downloadSubscriptions[key].unsubscribe()
 			delete this.#downloadSubscriptions[key]
@@ -133,7 +133,7 @@ const SuDScheduler = class {
 		killFiles(key)
 
 		this.#tryNextInQueue()
-		
+
 		return true
 	}
 
@@ -147,7 +147,7 @@ const SuDScheduler = class {
 
 		var activeCount = this.#countStatus('active')
 		var { maxConcurrentDownloads } = this.options
-		while(activeCount < maxConcurrentDownloads && this.#taskQueue[activeCount + 1]) {
+		while(activeCount < maxConcurrentDownloads && this.#taskQueue[activeCount]) {
 			var { key, status } = this.#taskQueue[activeCount]
 			if(status == 'active') return
 			this.startDownload(key)
@@ -229,7 +229,7 @@ const SuDScheduler = class {
 			}
 		}
 	}
-	
+
 }
 
 module.exports = SuDScheduler
